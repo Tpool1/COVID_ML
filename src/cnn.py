@@ -63,27 +63,14 @@ class cnn:
 
         search = grid_search()
 
-        if self.multi_target:
-            search.test_model(self.model, X_train, y_train, X_val, y_val, num_combs=12)
-        else:
-            print("weights applied")
-            search.test_model(self.model, X_train, y_train, X_val, y_val, get_weight_dict(y_train), num_combs=12)
+        search.test_model(self.model, X_train, y_train, X_val, y_val, num_combs=12)
 
-        class_weights = get_weight_dict(y_train, output_names)
+        opt = keras.optimizers.Adam(lr=0.01)
+        self.model.compile(loss='mean_squared_error',
+                optimizer=opt,
+                metrics=['accuracy', f1_m, precision_m, recall_m])
 
-        if self.multi_target:
-            self.model.compile(optimizer='adam',
-                                loss={k: class_loss(v) for k, v, in class_weights.items()},
-                                metrics=['accuracy', f1_m, precision_m, recall_m])
-
-            self.fit = self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, validation_data=(X_val, y_val))
-        else:
-            opt = keras.optimizers.Adam(lr=0.01)
-            self.model.compile(loss='mean_squared_error',
-                    optimizer=opt,
-                    metrics=['accuracy', f1_m, precision_m, recall_m])
-
-            self.fit = self.model.fit(X_train, y_train, epochs=25, batch_size=32, validation_data=(X_val, y_val), class_weight=get_weight_dict(y_train))
+        self.fit = self.model.fit(X_train, y_train, epochs=25, batch_size=32, validation_data=(X_val, y_val))
 
         try:
             self.model.save('data/saved_models/image_only/keras_cnn_model.h5')

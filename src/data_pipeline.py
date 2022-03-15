@@ -57,6 +57,8 @@ class data_pipeline:
 
                 i = i + 1
 
+            id = int(id)
+
             new_index.append(id)
 
         self.df = tokenize_dataset(self.df)
@@ -70,7 +72,7 @@ class data_pipeline:
             self.slice_data()
 
             print(self.img_array)
-            self.image_ids = list(self.img_array[:, -1])
+            self.image_ids = self.img_array[:, -1]
 
             # remove ids from img_array
             self.img_array = np.delete(self.img_array, -1, axis=1)
@@ -135,7 +137,7 @@ class data_pipeline:
         unflattened_array = np.empty(shape=(image_x.shape[0], int(math.sqrt(image_x.shape[-1])), int(math.sqrt(image_x.shape[-1])), 1), dtype=np.int8)
         i = 0
         for image in image_x:
-            image = np.reshape(image, (1, 512, 512, 1))
+            image = np.reshape(image, (1, 128, 128, 1))
             unflattened_array[i] = image
 
             i = i + 1

@@ -18,15 +18,13 @@ def filter_ids(array, clinical_ids):
 
             i = i + 1
 
-        new_ids.append(id)
+        new_ids.append(int(id))
 
     clinical_ids = new_ids
 
     i = 0
     for img in array:
         id = img[-1]
-        print("ID", id)
-        print("clinical ids:", clinical_ids)
         if id not in clinical_ids:
             del_indices.append(i)
 
